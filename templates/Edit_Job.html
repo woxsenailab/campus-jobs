@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Jobs</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 95%;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            table-layout: fixed;
+            /* Ensures consistent width for columns */
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #dddddd;
+            word-wrap: break-word;
+            /* Ensure long words wrap within cells */
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333333;
+            font-weight: bold;
+        }
+
+        td {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .des {
+            width: 50%;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .no-jobs {
+            text-align: center;
+            padding: 20px;
+            color: #999999;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: pink;
+            color: black;
+            font-weight: bold;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: pink;
+            color: white;
+        }
+
+        .edit-button,
+        .delete-button {
+            display: inline-block;
+            padding: 8px 12px;
+            margin-right: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            color: black;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .edit-button:hover {
+            background-color: #28a745;
+            opacity: 0.8;
+            color: white;
+        }
+
+        .delete-button:hover {
+            background-color: #dc3545;
+            opacity: 0.8;
+            color: white;
+        }
+
+        .edit-button,
+        .delete-button {
+            background-color: pink;
+        }
+        .modal1 {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal1-content {
+            background-color: #fefefe;
+            border: 1px solid #888;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            max-width: 50%;
+            margin: 20px auto;
+        }
+
+        .modal1-body {
+            height: 30%;
+            overflow: auto;
+        }
+
+        .modal1-footer {
+            padding: 10px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
+
+        .btn-secondary,
+        .btn-primary {
+            background-color: pink;
+            color: #000;
+            font-weight: bold;
+            border-color: black;
+        }
+
+        .btn-secondary:hover,
+        .btn-primary:hover {
+            background-color: pink;
+        }
+
+        .titles{
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="modal fade" id="editJobModal" tabindex="-1" role="dialog" aria-labelledby="editJobModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editJobModalLabel">Edit Job</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editJobForm" enctype="multipart/form-data">
+                            <input type="hidden" id="editJobId" name="editJobId">
+                            <div class="form-group">
+                                <label class="titles" for="editDepartment">Department :</label>
+                                <input type="text" class="form-control" id="editDepartment" name="department">
+                            </div>
+                            <div class="form-group">
+                                <label class="titles" for="editDesignation">Designation :</label>
+                                <input type="text" class="form-control" id="editDesignation" name="designation">
+                            </div>
+                            <div class="form-group">
+                                <label class="titles" for="editDescription">Description :</label>
+                                <div class="formatting-options">
+                                    <button type="button" class="btn btn-secondary" onclick="formatText('bold')">Bold</button>
+                                    <button type="button" class="btn btn-secondary" onclick="formatText('italic')">Italic</button>
+                                    <button type="button" class="btn btn-secondary" onclick="formatText('underline')">Underline</button>
+                                    <button type="button" class="btn btn-secondary" onclick="formatText('insertUnorderedList')">Bullet</button>
+                                </div>
+                                <div class="editable-div" id="editDescription" contenteditable="true" placeholder="Enter job description" required></div>
+                                <textarea class="form-control" id="editDescriptionHidden" name="description" maxlength="8000" style="display:none;"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="titles" for="editLinkedIn">PDF :</label>
+                                <input type="file" class="form-control" id="editLinkedIn" name="pdf">
+                            </div>
+                            <div class="form-group">
+                                <label class="titles" for="editpdffile">PDF filename :</label>
+                                <input type="text" class="form-control" id="editpdffile" name="pdffile" readonly>
+                            </div>
+                        </form>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="saveEditedJob()">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h2>Edit Jobs</h2>
+
+        <table class="job-list">
+            <thead>
+                <tr>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th class="des">Description</th>
+                    <th>PDF</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if jobs %}
+                {% for job in jobs %}
+                <tr id="job-{{ job[0] }}">
+                    <td>{{ job[1] }}</td>
+                    <td>{{ job[2] }}</td>
+                    <td class="des">{{ job[3] | safe }}</td>
+                    <td><a href="#" onclick="showPDF('{{ job[4] }}')">{{ job[4] }}</a></td>
+                    <td>
+                        <a href="#" class="edit-button"
+                            onclick="openEditModal('{{ job[0] }}', '{{ job[1] }}', '{{ job[2] }}', '{{ job[3] }}', '{{ job[4] }}')">Edit</a>
+                        <a href="#" class="delete-button" onclick="deleteJob('{{ job[0] }}')">Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="no-jobs">No jobs available.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <a href="/faculty_dashboard" class="back-button">Back to Dashboard</a>
+    </div>
+
+    <div id="PdfModal" class="modal1">
+        <div class="modal1-content">
+            <div class="modal1-header">
+                <h2>PDF Details</h2>
+            </div>
+
+            <div class="modal1-body">
+                <div class="pdf-container">
+                    <iframe id="pdfViewer" width="100%" height="500px"></iframe>
+                </div>
+            </div>
+            <div class="modal1-footer">
+                <button class="btn btn-secondary" onclick="pdfcloseModal()">Close</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function openEditModal(jobId, department, designation, description, pdfPath) {
+            department = escapeHtml(department);
+            designation = escapeHtml(designation);
+            pdfPath = escapeHtml(pdfPath);
+
+            document.getElementById('editJobId').value = jobId;
+            document.getElementById('editDepartment').value = department;
+            document.getElementById('editDesignation').value = designation;
+            document.getElementById('editpdffile').value = pdfPath;
+
+            document.getElementById('editDescription').innerHTML = description;
+            document.getElementById('editDescriptionHidden').value = description;
+
+            $('#editJobModal').modal('show');
+        }
+
+        function escapeHtml(text) {
+            var map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, function(m) { return map[m]; });
+        }
+
+        function formatText(command) {
+            document.execCommand(command, false, null);
+        }
+
+        document.getElementById('editDescription').addEventListener('input', function () {
+            document.getElementById('editDescriptionHidden').value = this.innerHTML;
+        });
+
+        function saveEditedJob() {
+    const formData = new FormData(document.getElementById('editJobForm'));
+    fetch(`/api/edit_job/${document.getElementById('editJobId').value}`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert('Job updated successfully');
+            location.reload();
+        } else {
+            alert('Error updating job');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error updating job');
+    });
+}
+
+function deleteJob(jobId) {
+    if (confirm('Are you sure you want to delete this job?')) {
+        fetch(`/api/delete_job/${jobId}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                document.getElementById(`job-${jobId}`).remove();
+            } else {
+                alert('Error deleting job');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error deleting job');
+        });
+    }
+}
+var pdfmodal = document.getElementById('PdfModal');
+         var pdfViewer = document.getElementById('pdfViewer');
+
+         function showPDF(pdfLink) {
+            pdfViewer.src = pdfLink;
+            pdfmodal.style.display = 'block';
+            pdfmodal.classList.add('pdf-modal');
+        }
+
+        function pdfcloseModal() {
+            pdfViewer.src = ''; 
+            pdfmodal.style.display = 'none';
+        }
+   </script>
+</body>
+
+</html>

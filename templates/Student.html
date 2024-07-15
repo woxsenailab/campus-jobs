@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .job_cont {
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: pink;
+            color: black;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            background-color: pink;
+            color: white;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        .des1 {
+            width: 20%;
+            overflow-y: auto;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal1 {
+            display: none;
+            position: fixed;
+            z-index: 1050;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            border: 1px solid #888;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            max-width: 50%;
+            margin: 20px auto;
+        }
+
+        .modal-body {
+            height: 30%;
+            overflow: auto;
+        }
+
+        .modal-footer {
+            padding: 10px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary,
+        .btn-primary {
+            background-color: pink;
+            color: #000;
+        }
+
+        .btn-secondary:hover,
+        .btn-primary:hover {
+            background-color: pink;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Welcome, Student!</h2>
+        <a class="btn" href="/logout">Logout</a>
+
+        <div class="job_cont">
+            <h2>Available Jobs</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Department</th>
+                        <th>Designation</th>
+                        <!-- <th class="des">Description</th> -->
+                        <th>PDF</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if jobs %}
+                    {% for job in jobs %}
+                    <tr>
+                        <td>{{ job[1] }}</td>
+                        <td>{{ job[2] }}</td>
+                        <!-- <td class="des1">{{ job[3] }}</td> -->
+                        <td><a href="#" onclick="showPDF('{{ job[4] }}')">{{ job[4] }}</a></td>
+                        <td>
+                            <a href="#" class="view-job"
+                                onclick="showModal('{{ job[1] }}', '{{ job[2] }}', '{{ job[3] }}', '{{ job[4] }}','{{ job[0] }}')">View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="no-jobs">No jobs available.</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="PdfModal" class="modal1">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>PDF Details</h2>
+            </div>
+
+            <div class="modal-body">
+                <div class="pdf-container">
+                    <iframe id="pdfViewer" width="100%" height="500px"></iframe>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="pdfcloseModal()">Close</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- The Modal -->
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Job Details</h2>
+            </div>
+
+            <div class="modal-body">
+                <p><strong>Department:</strong> <span id="jobDepartment"></span></p>
+                <p><strong>Designation:</strong> <span id="jobDesignation"></span></p>
+                <p><strong>Description:</strong> <span id="jobDescription"></span></p>
+                <p><strong>PDF:</strong> <a id="jobLink" href="#" onclick="showPDF()"></a></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Close</button>
+                <button class="btn btn-primary" onclick="applyJob()">Apply</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+                var modal = document.getElementById('jobModal');
+        var pdfmodal = document.getElementById('PdfModal');
+        var pdfViewer = document.getElementById('pdfViewer');
+
+        function showModal(department, designation, description, link, jobId) {
+            var jobDepartment = document.getElementById('jobDepartment');
+            var jobDesignation = document.getElementById('jobDesignation');
+            var jobDescription = document.getElementById('jobDescription');
+            var jobLink = document.getElementById('jobLink');
+
+            jobDepartment.textContent = department;
+            jobDesignation.textContent = designation;
+            jobDescription.innerHTML = description;
+            jobLink.textContent = link;
+            jobLink.href = link;
+            jobLink.onclick = function () {
+                showPDF(link);
+                return false;
+            };
+
+            pdfmodal.style.display = 'none';
+
+            modal.style.display = 'block';
+            modal.dataset.jobId = jobId;
+        }
+
+        function showPDF(pdfLink) {
+            pdfViewer.src = pdfLink;
+            pdfmodal.style.display = 'block';
+            pdfmodal.classList.add('pdf-modal');
+        }
+
+        function pdfcloseModal() {
+            pdfViewer.src = ''; 
+            pdfmodal.style.display = 'none';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        function applyJob() {
+            var jobId = modal.dataset.jobId;
+            var applicant_email = "{{ email }}";
+            if (applicant_email) {
+                fetch(`/apply_job/${jobId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: applicant_email,
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message === 'You have already applied for this job') {
+                            alert(data.message);
+                            return;
+                        }
+                        alert(data.message);
+                        window.location.href = '/student_dashboard';
+                    })
+                    .catch(error => console.error('Error applying for job:', error));
+            }
+        }
+    </script>
+</body>
+
+</html>

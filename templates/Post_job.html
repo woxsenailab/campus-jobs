@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post a Job</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"],
+        .editable-div {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            /* min-height: 100px; */
+            outline: none;
+            resize: vertical;
+            overflow-y: auto;
+            background-color: #fff;
+        }
+
+        input[type="text"] {
+            width: calc(100% - 20px);
+        }
+
+        .formatting-options button {
+            margin-right: 10px;
+            padding: 8px 12px;
+            border: none;
+            font-weight: bold;
+            background-color: pink;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .formatting-options button:hover {
+            background-color: pink;
+            color: white;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: pink;
+            color: black;
+            font-weight: bold;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease-in-out;
+        }
+
+        input[type="submit"]:hover {
+            background-color: pink;
+            color: white;
+        }
+
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-button {
+            display: inline-block;
+            background-color: pink;
+            color: black;
+            font-weight: bold;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: pink;
+            color: white;
+        }
+
+        .tit{
+            font-weight: bold;
+            color: black;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Post a Job</h2>
+        <form id="jobForm">
+            <label class="tit" for="department">Department:</label>
+            <input type="text" name="department" id="department" placeholder="Enter department" required><br>
+
+            <label class="tit" for="designation">Designation:</label>
+            <input type="text" name="designation" id="designation" placeholder="Enter designation" required><br>
+
+            <label class="tit">Description:</label>
+            <div class="formatting-options">
+                <button type="button" onclick="formatText('bold')">Bold</button>
+                <button type="button" onclick="formatText('italic')">Italic</button>
+                <button type="button" onclick="formatText('underline')">Underline</button>
+                <button type="button" onclick="formatText('insertUnorderedList')">Bullet</button>
+            </div>
+            <div class="editable-div" id="description" contenteditable="true" placeholder="Enter job description"
+                required></div>
+            <br>
+
+            <label class="tit" for="pdf">Upload PDF:</label>
+            <input type="file" name="pdf" id="pdf" accept=".pdf" required><br><br>
+
+
+            <input type="submit" value="Submit Job">
+            <a href="/faculty_dashboard" class="back-button">Back to Dashboard</a>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function formatText(command) {
+            document.execCommand(command, false, null);
+        }
+
+        $(document).ready(function () {
+            $('#jobForm').submit(function (event) {
+                event.preventDefault();
+
+                var formData = new FormData();
+                formData.append('department', $('#department').val());
+                formData.append('designation', $('#designation').val());
+                formData.append('description', $('#description').html());
+                formData.append('pdf', $('#pdf')[0].files[0]); 
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/submit_job',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        alert(response.message);
+                        $('#jobForm')[0].reset();
+                        $('#description').empty(); 
+                    },
+                    error: function (error) {
+                        console.log('Error:', error);
+                        alert('Error posting job. Please try again later.');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

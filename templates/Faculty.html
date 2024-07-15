@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: pink;
+            color: black;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: pink;
+            color: white;
+        }
+
+        .notification {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .job-list {
+            margin-top: 20px;
+        }
+
+        .job-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .job-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .job-card p {
+            margin-bottom: 0;
+            color: #666;
+        }
+
+        .job-card h4 {
+            margin-top: 10px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .job-card ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .job-card li {
+            color: #666;
+        }
+
+        .job-card li:first-child {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome, Faculty!</h2>
+        <p>Manage your job postings here.</p>
+        <a class="btn" href="/post_job">Post a Job</a>
+        <a class="btn" href="/Edit_job">Manage Job</a>
+        <a class="btn" href="/logout">Logout</a>
+
+        <div class="job-list">
+            {% for job in jobs %}
+                <div class="job-card">
+                    <h3>{{ job.designation }}</h3>
+                    <p><strong>Number of Applicants:</strong> {{ job.num_applicants }}</p> 
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
