@@ -44,8 +44,6 @@
             margin-right: 10px;
             padding: 8px 12px;
             border: none;
-            font-weight: bold;
-            background-color: pink;
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
@@ -53,16 +51,14 @@
         }
 
         .formatting-options button:hover {
-            background-color: pink;
-            color: white;
+            background-color: #ddd;
         }
 
         input[type="submit"] {
             width: 100%;
             padding: 12px;
-            background-color: pink;
-            color: black;
-            font-weight: bold;
+            background-color: #ee495c;
+            color: white;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -71,8 +67,7 @@
         }
 
         input[type="submit"]:hover {
-            background-color: pink;
-            color: white;
+            background-color: #ee495c;
         }
 
         .error-message {
@@ -89,7 +84,7 @@
         }
 
         a {
-            color: #007bff;
+            color: #ee495c;
             text-decoration: none;
         }
 
@@ -99,9 +94,8 @@
 
         .back-button {
             display: inline-block;
-            background-color: pink;
-            color: black;
-            font-weight: bold;
+            background-color: #ee495c;
+            color: #ffffff;
             padding: 10px 20px;
             text-decoration: none;
             border-radius: 5px;
@@ -110,15 +104,8 @@
         }
 
         .back-button:hover {
-            background-color: pink;
-            color: white;
+            background-color: #ee495c;
         }
-
-        .tit{
-            font-weight: bold;
-            color: black;
-        }
-
     </style>
 </head>
 
@@ -126,13 +113,16 @@
     <div class="container">
         <h2>Post a Job</h2>
         <form id="jobForm">
-            <label class="tit" for="department">Department:</label>
+            <label for="department">Job ID:</label>
+            <input type="text" name="department" id="job_id" placeholder="Enter Job ID" required><br>
+
+            <label for="department">Department:</label>
             <input type="text" name="department" id="department" placeholder="Enter department" required><br>
 
-            <label class="tit" for="designation">Designation:</label>
+            <label for="designation">Designation:</label>
             <input type="text" name="designation" id="designation" placeholder="Enter designation" required><br>
 
-            <label class="tit">Description:</label>
+            <label>Description:</label>
             <div class="formatting-options">
                 <button type="button" onclick="formatText('bold')">Bold</button>
                 <button type="button" onclick="formatText('italic')">Italic</button>
@@ -143,7 +133,7 @@
                 required></div>
             <br>
 
-            <label class="tit" for="pdf">Upload PDF:</label>
+            <label for="pdf">Upload PDF:</label>
             <input type="file" name="pdf" id="pdf" accept=".pdf" required><br><br>
 
 
@@ -162,6 +152,7 @@
                 event.preventDefault();
 
                 var formData = new FormData();
+                formData.append('job_id', $('#job_id').val());
                 formData.append('department', $('#department').val());
                 formData.append('designation', $('#designation').val());
                 formData.append('description', $('#description').html());

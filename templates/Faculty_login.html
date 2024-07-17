@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff; 
+            background-image: url('assets/top.png'); 
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: top center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 16px; 
+            box-shadow: 0 0 9px rgba(0, 0, 0, 0.5); 
+            width: 83%; 
+            max-width: 360px; 
+            text-align: center;
+        }
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            font-size: 24px; 
+        }
+        input[type="text"],
+        input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 16px; 
+            font-size: 16px;
+            transition: border-color 0.3s ease-in-out;
+            box-shadow: 0 0 9px rgba(0, 0, 0, 0.5);
+            background-color: #ffffff;
+            display: block;
+            margin: 0 auto;
+            text-align: center;
+        }
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #EA485D;
+            color: white;
+            border: none;
+            border-radius: 30px; 
+            cursor: pointer;
+            font-size: 24px; 
+            transition: background-color 0.3s ease-in-out;
+        }
+        input[type="submit"]:hover {
+            background-color: #FF6372; 
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Faculty Login</h2>
+        <form id="facultyLoginForm">
+            <input type="hidden" name="login_type" value="faculty"> 
+            <input type="text" id="email" name="email" placeholder="Email" required><br>
+            <input type="password" id="password" name="password" placeholder="Password" required><br>
+            <input type="submit" value="Login"><br>
+        </form><br>
+        <a href="/"><input type="submit" value="Back"></a>
+        <div class="error-message" id="errorMessage">{{ error }}</div>
+    </div>
+
+    <script>
+        document.getElementById('facultyLoginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(this);
+
+            fetch('/login', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    const errorMessage = document.getElementById('errorMessage');
+                    errorMessage.textContent = data.error;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+    </div>
+</body>
+</html>

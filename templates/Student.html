@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +13,7 @@
         }
 
         .container {
-            max-width: 100%;
+            max-width: 60%;
             margin: 20px auto;
             padding: 20px;
             background-color: #ffffff;
@@ -38,9 +37,8 @@
         .btn {
             display: inline-block;
             padding: 10px 20px;
-            background-color: pink;
-            color: black;
-            font-weight: bold;
+            background-color: #ee495c;
+            color: white;
             text-decoration: none;
             border-radius: 4px;
             cursor: pointer;
@@ -48,8 +46,7 @@
         }
 
         .btn:hover {
-            background-color: pink;
-            color: white;
+            background-color: #ee495c;
         }
 
         table {
@@ -105,8 +102,8 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            max-width: 50%;
-            margin: 20px auto;
+            max-width: 60%;
+            margin: 5% auto;
         }
 
         .modal-body {
@@ -128,39 +125,36 @@
             transition: background-color 0.3s ease;
         }
 
-        .btn-secondary,
-        .btn-primary {
-            background-color: pink;
+        .btn-secondary {
+            background-color: #ccc;
             color: #000;
         }
 
-        .btn-secondary:hover,
-        .btn-primary:hover {
-            background-color: pink;
-            color: white;
+        .btn-secondary:hover {
+            background-color: #bbb;
         }
 
         @media (max-width: 768px) {
             .modal-content {
                 padding: 10px;
+                max-width: 90%;
             }
         }
     </style>
 </head>
-
 <body>
     <div class="container">
         <h2>Welcome, Student!</h2>
-        <a class="btn" href="/logout">Logout</a>
+        <a class="btn" href="{{ url_for('logout') }}">Logout</a>
 
         <div class="job_cont">
             <h2>Available Jobs</h2>
             <table>
                 <thead>
                     <tr>
+                        <th>Job ID</th>
                         <th>Department</th>
                         <th>Designation</th>
-                        <!-- <th class="des">Description</th> -->
                         <th>PDF</th>
                         <th>Action</th>
                     </tr>
@@ -171,11 +165,11 @@
                     <tr>
                         <td>{{ job[1] }}</td>
                         <td>{{ job[2] }}</td>
-                        <!-- <td class="des1">{{ job[3] }}</td> -->
-                        <td><a href="#" onclick="showPDF('{{ job[4] }}')">{{ job[4] }}</a></td>
+                        <td>{{ job[3] }}</td>
+                        <td><a href="#" onclick="showPDF('{{ job[5] }}')">{{ job[6] }}</a></td>
                         <td>
                             <a href="#" class="view-job"
-                                onclick="showModal('{{ job[1] }}', '{{ job[2] }}', '{{ job[3] }}', '{{ job[4] }}','{{ job[0] }}')">View</a>
+                                onclick="showModal('{{ job[1] }}','{{ job[2] }}', '{{ job[3] }}', '{{ job[4] }}', '{{ job[5] }}', '{{ job[6] }}', '{{ job[0] }}')">View</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -203,7 +197,6 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="pdfcloseModal()">Close</button>
             </div>
-
         </div>
     </div>
 
@@ -215,6 +208,7 @@
             </div>
 
             <div class="modal-body">
+                <p><strong>Job ID:</strong> <span id="jobID"></span></p>
                 <p><strong>Department:</strong> <span id="jobDepartment"></span></p>
                 <p><strong>Designation:</strong> <span id="jobDesignation"></span></p>
                 <p><strong>Description:</strong> <span id="jobDescription"></span></p>
@@ -224,33 +218,29 @@
                 <button class="btn btn-secondary" onclick="closeModal()">Close</button>
                 <button class="btn btn-primary" onclick="applyJob()">Apply</button>
             </div>
-
         </div>
     </div>
 
     <script>
-                var modal = document.getElementById('jobModal');
+        var modal = document.getElementById('jobModal');
         var pdfmodal = document.getElementById('PdfModal');
         var pdfViewer = document.getElementById('pdfViewer');
 
-        function showModal(department, designation, description, link, jobId) {
-            var jobDepartment = document.getElementById('jobDepartment');
-            var jobDesignation = document.getElementById('jobDesignation');
-            var jobDescription = document.getElementById('jobDescription');
+        function showModal(id, department, designation, description, pdfLink, filename, jobId) {
+            document.getElementById('jobID').textContent = id;
+            document.getElementById('jobDepartment').textContent = department;
+            document.getElementById('jobDesignation').textContent = designation;
+            document.getElementById('jobDescription').innerHTML = description;
             var jobLink = document.getElementById('jobLink');
+            jobLink.textContent = filename;
+            jobLink.href = pdfLink;
 
-            jobDepartment.textContent = department;
-            jobDesignation.textContent = designation;
-            jobDescription.innerHTML = description;
-            jobLink.textContent = link;
-            jobLink.href = link;
             jobLink.onclick = function () {
-                showPDF(link);
+                showPDF(pdfLink);
                 return false;
             };
 
             pdfmodal.style.display = 'none';
-
             modal.style.display = 'block';
             modal.dataset.jobId = jobId;
         }
@@ -258,11 +248,10 @@
         function showPDF(pdfLink) {
             pdfViewer.src = pdfLink;
             pdfmodal.style.display = 'block';
-            pdfmodal.classList.add('pdf-modal');
         }
 
         function pdfcloseModal() {
-            pdfViewer.src = ''; 
+            pdfViewer.src = '';
             pdfmodal.style.display = 'none';
         }
 
@@ -297,5 +286,4 @@
         }
     </script>
 </body>
-
 </html>
