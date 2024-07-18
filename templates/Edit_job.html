@@ -202,16 +202,11 @@
                                         onclick="formatText('underline')">Underline</button>
                                     <button type="button" class="btn btn-secondary"
                                         onclick="formatText('insertUnorderedList')">Bullet</button>
+                                </div>                               
+                                <div class="form-group" contenteditable="true">
+                                <label for="job-description">Job Description:</label>
+                                <textarea id="form-control" name="description" maxlength="8000" required></textarea>
                                 </div>
-                                <div class="editable-div" id="editDescription" contenteditable="true"
-                                    placeholder="Enter job description" required></div>
-                                <textarea class="form-control" id="editDescriptionHidden" name="description"
-                                    maxlength="8000" style="display:none;"></textarea>
-                            </div>
-                            <div class="form-group" >
-                            <label for="job-description">Job Description:</label>
-                            <textarea id="job-description" name="description" maxlength="8000" required></textarea>
-                            </div>
                             <div class="form-group">
                                 <label for="editLinkedIn">PDF</label>
                                 <input type="file" class="form-control" id="editLinkedIn" name="pdf">
