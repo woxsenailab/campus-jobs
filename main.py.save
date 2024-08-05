@@ -256,7 +256,7 @@ def jobs_list():
         job_dict = {
             'id': job[1],
             'department': job[2],
-            'designation': job[3],
+            'designation': job[2],
             'document_path':job[5],
             'filename': job[6]
         }
