@@ -165,52 +165,7 @@ def logout():
     logout_user()  
     session.pop('email', None) 
     return render_template('Home.html')
-
-@app.route('/api/upload', methods=['POST'])
-def upload_Documents():
-    if 'pdf' not in request.files:
-        return 'no selected file',400
-    
-    files = request.files.getlist('pdf')
-
-    for file in files: 
-        filename = secure_filename(file.filename)
-        print(filename)
-        if 'TT' in filename:
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'],'TT', filename))
-            return jsonify({'message': ' TT file Uploaded successsfuly '}) 
-        elif 'CO' in filename:
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'],'CO', filename))
-            return jsonify({'message': ' CO file Uploaded successsfuly '}) 
-        elif 'AS' in filename:
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'],'AS', filename))
-            return jsonify({'message': ' AS file Uploaded successsfuly '}) 
-
-@app.route('/api/view_files', methods=['POST'])
-def view_files():
-    data = request.get_json()
-    file_type = data.get('type')
-    course = data.get('course')
-    semester = data.get('semester').replace(' ', '_')
-    section = data.get('section')
-    subject = data.get('subject')
-
-    directory = os.path.join(app.config['UPLOAD_FOLDER'], file_type)
-
-    if file_type == 'TT':
-        filename = f"{file_type}{course}{semester}_{section}.pdf"
-    elif file_type in ['CO', 'AS']:
-        filename = f"{file_type}{course}{semester}{section}{subject}.pdf"
-    else:
-        return jsonify({'message': 'Invalid file type'}), 400
-
-    file_path = os.path.join(directory, filename)
-
-    if os.path.exists(file_path):
-        return send_from_directory(directory, filename)
-    else:
-        return jsonify({'message': f'{file_type} file not found for the specified course, semester, and section'}), 404
-    
+ 
 @app.route('/post_job')
 @login_required
 def post_job():
